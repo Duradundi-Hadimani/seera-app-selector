@@ -3,6 +3,119 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Seera Apps</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+    .logo { text-align: center; margin-bottom: 40px; }
+    .logo h1 { font-size: 22px; color: #1a3a5c; font-weight: 700; }
+    .logo p { color: #888; font-size: 14px; margin-top: 6px; }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    label { font-size: 13px; color: #888; display: block; margin-bottom: 8px; }
+    input[type=text] {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+    input[type=text]:focus { border-color: #1a3a5c; }
+    .hint { font-size: 12px; color: #aaa; margin-top: 8px; }
+    .btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background: #1a3a5c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:active { opacity: 0.85; }
+    .error { color: #e53e3e; font-size: 13px; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+
+<div class="logo">
+  <h1>Seera Apps</h1>
+  <p>Enter your hospital URL to continue</p>
+</div>
+
+<div class="card">
+  <label for="siteUrl">Hospital site URL</label>
+  <input type="text" id="siteUrl" placeholder="https://kfsh-dammam-asm.seeraarabia.com" />
+  <p class="hint">Enter the URL with or without /asm_app — we'll handle it</p>
+  <p class="error" id="errMsg">Please enter a valid URL</p>
+  <button class="btn" onclick="goToSite()">Open App →</button>
+</div>
+
+<script>
+  function normalizeUrl(raw) {
+    raw = raw.trim();
+    if (!raw) return null;
+
+    // Add https:// if no protocol given
+    if (!/^https?:\/\//i.test(raw)) {
+      raw = 'https://' + raw;
+    }
+
+    try {
+      const u = new URL(raw);
+
+      // Append /asm_app/ if not already in path
+      if (!u.pathname.includes('/asm_app')) {
+        u.pathname = '/asm_app/';
+      }
+
+      return u.toString();
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function goToSite() {
+    const input = document.getElementById('siteUrl').value;
+    const err = document.getElementById('errMsg');
+    const url = normalizeUrl(input);
+
+    if (!url) {
+      err.style.display = 'block';
+      return;
+    }
+
+    err.style.display = 'none';
+    window.location.href = url;
+  }
+
+  // Allow pressing Enter
+  document.getElementById('siteUrl').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') goToSite();
+  });
+</script>
+
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Seera Apps</title>
@@ -96,4 +209,4 @@
   </a>
 
 </body>
-</html>
+</html> -->
