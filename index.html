@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Seera Apps</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .logo h1 { font-size: 22px; color: #1a3a5c; font-weight: 700; }
+    .logo p  { color: #888; font-size: 14px; margin-top: 6px; }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      text-decoration: none;
+    }
+    .card:active { background: #f5f8ff; }
+    .icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: #e8f0fe;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .info h3 { font-size: 16px; color: #1a3a5c; font-weight: 600; }
+    .info p  { font-size: 13px; color: #888; margin-top: 3px; }
+    .arrow {
+      margin-left: auto;
+      color: #ccc;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    h2 {
+      font-size: 13px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <h1>Seera Apps</h1>
+    <p>Select your hospital to continue</p>
+  </div>
+
+  <h2>Available Sites</h2>
+
+  <a class="card" href="https://kfsh-dammam-asm.seeraarabia.com/asm_app/">
+    <div class="icon">🏥</div>
+    <div class="info">
+      <h3>KFSH Dammam</h3>
+      <p>King Fahad Specialist Hospital</p>
+    </div>
+    <div class="arrow">›</div>
+  </a>
+
+  <a class="card" href="http://35.252.41.128/asm_app/">
+    <div class="icon">🏥</div>
+    <div class="info">
+      <h3>Seera Unified</h3>
+      <p>Seera Unified</p>
+    </div>
+    <div class="arrow">›</div>
+  </a>
+
+</body>
+</html>
