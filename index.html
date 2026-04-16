@@ -3,6 +3,204 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Seera Apps</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo h1 { font-size: 22px; color: #1a3a5c; font-weight: 700; }
+    .logo p { color: #888; font-size: 14px; margin-top: 6px; }
+
+    .toggle-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .toggle-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1.5px solid #1a3a5c;
+      border-radius: 10px;
+      background: white;
+      color: #1a3a5c;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .toggle-btn.active { background: #1a3a5c; color: white; }
+
+    .section { display: none; }
+    .section.visible { display: block; }
+
+    .url-card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    label { font-size: 13px; color: #888; display: block; margin-bottom: 8px; }
+    input[type=text] {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+    input[type=text]:focus { border-color: #1a3a5c; }
+    .hint { font-size: 12px; color: #aaa; margin-top: 8px; }
+    .go-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background: #1a3a5c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .go-btn:active { opacity: 0.85; }
+    .error { color: #e53e3e; font-size: 13px; margin-top: 10px; display: none; }
+
+    .section-label {
+      font-size: 13px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .site-card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      text-decoration: none;
+    }
+    .site-card:active { background: #f5f8ff; }
+    .icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: #e8f0fe;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .info h3 { font-size: 15px; color: #1a3a5c; font-weight: 600; }
+    .info p { font-size: 13px; color: #888; margin-top: 2px; }
+    .arrow { margin-left: auto; color: #ccc; font-size: 22px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <h1>Seera Apps</h1>
+    <p>Select or enter your site</p>
+  </div>
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" onclick="showSection('url', this)">Enter URL</button>
+    <button class="toggle-btn" onclick="showSection('sites', this)">Available Sites</button>
+  </div>
+
+  <!-- ===== ENTER URL SECTION (default) ===== -->
+  <div class="section visible" id="section-url">
+    <div class="url-card">
+      <label for="siteUrl">Site URL</label>
+      <input type="text" id="siteUrl" placeholder="https://site-name.com" />
+      <p class="hint">Enter the URL</p>
+      <p class="error" id="errMsg">Please enter a valid URL</p>
+      <button class="go-btn" onclick="goToSite()">Open App →</button>
+    </div>
+  </div>
+
+  <!-- ===== AVAILABLE SITES SECTION ===== -->
+  <div class="section" id="section-sites">
+    <p class="section-label">Available Sites</p>
+
+    <a class="site-card" href="https://kfsh-dammam-asm.seeraarabia.com/asm_app/">
+      <div class="icon">🏥</div>
+      <div class="info">
+        <h3>KFSH Dammam</h3>
+        <p>King Fahad Specialist Hospital</p>
+      </div>
+      <div class="arrow">›</div>
+    </a>
+
+    <a class="site-card" href="http://35.252.41.128/asm_app/">
+      <div class="icon">🏥</div>
+      <div class="info">
+        <h3>Seera Unified</h3>
+        <p>Seera Unified</p>
+      </div>
+      <div class="arrow">›</div>
+    </a>
+
+    <a class="site-card" href="https://imanrdh-seeraasm.seeraarabia.com/asm_app/">
+      <div class="icon">🏥</div>
+      <div class="info">
+        <h3>Iman RDH</h3>
+        <p>Iman Rehab & Diagnostic Hospital</p>
+      </div>
+      <div class="arrow">›</div>
+    </a>
+
+    <!-- ADD NEW SITE: copy the block above and change href, h3, p -->
+
+  </div>
+
+  <script>
+    function showSection(name, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+      document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('section-' + name).classList.add('visible');
+      btn.classList.add('active');
+    }
+
+    function normalizeUrl(raw) {
+      raw = raw.trim();
+      if (!raw) return null;
+      if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+      try {
+        const u = new URL(raw);
+        if (!u.pathname.includes('/asm_app')) u.pathname = '/asm_app/';
+        return u.toString();
+      } catch(e) { return null; }
+    }
+
+    function goToSite() {
+      const input = document.getElementById('siteUrl').value;
+      const err = document.getElementById('errMsg');
+      const url = normalizeUrl(input);
+      if (!url) { err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      window.location.href = url;
+    }
+
+    document.getElementById('siteUrl').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') goToSite();
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Seera Apps</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,107 +304,6 @@
     if (e.key === 'Enter') goToSite();
   });
 </script>
-
-</body>
-</html>
-
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Seera Apps</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      min-height: 100vh;
-      padding: 40px 24px;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .logo h1 { font-size: 22px; color: #1a3a5c; font-weight: 700; }
-    .logo p  { color: #888; font-size: 14px; margin-top: 6px; }
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-      cursor: pointer;
-      border: none;
-      width: 100%;
-      text-decoration: none;
-    }
-    .card:active { background: #f5f8ff; }
-    .icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      background: #e8f0fe;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-    .info h3 { font-size: 16px; color: #1a3a5c; font-weight: 600; }
-    .info p  { font-size: 13px; color: #888; margin-top: 3px; }
-    .arrow {
-      margin-left: auto;
-      color: #ccc;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    h2 {
-      font-size: 13px;
-      color: #aaa;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 14px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="logo">
-    <h1>Seera Apps</h1>
-    <p>Select your hospital to continue</p>
-  </div>
-
-  <h2>Available Sites</h2>
-
-  <a class="card" href="https://kfsh-dammam-asm.seeraarabia.com/asm_app/">
-    <div class="icon">🏥</div>
-    <div class="info">
-      <h3>KFSH Dammam</h3>
-      <p>King Fahad Specialist Hospital</p>
-    </div>
-    <div class="arrow">›</div>
-  </a>
-
-  <a class="card" href="http://35.252.41.128/asm_app/">
-    <div class="icon">🏥</div>
-    <div class="info">
-      <h3>Seera Unified</h3>
-      <p>Seera Unified</p>
-    </div>
-    <div class="arrow">›</div>
-  </a>
-  <a class="card" href="https://imanrdh-seeraasm.seeraarabia.com/asm_app/">
-    <div class="icon">🏥</div>
-    <div class="info">
-      <h3>Iman RDH</h3>
-      <p>Iman Rehab & Diagnostic Hospital</p>
-    </div>
-    <div class="arrow">›</div>
-  </a>
 
 </body>
 </html> -->
