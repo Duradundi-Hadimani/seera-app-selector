@@ -14,6 +14,21 @@
       min-height: 100vh;
       padding: 40px 24px;
     }
+
+    /* ── Checking screen ── */
+    #checkingScreen { text-align: center; padding: 80px 24px; }
+    .spinner-lg {
+      width: 44px; height: 44px;
+      border: 3px solid #dde3ed;
+      border-top-color: #1a3a5c;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    #checkingScreen p { color: #888; font-size: 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Main UI ── */
     .logo { text-align: center; margin-bottom: 32px; }
     .logo h1 { font-size: 22px; color: #1a3a5c; font-weight: 700; }
     .logo p { color: #888; font-size: 14px; margin-top: 6px; }
@@ -21,8 +36,7 @@
     .toggle-row { display: flex; gap: 8px; margin-bottom: 20px; }
     .toggle-btn {
       flex: 1; padding: 10px;
-      border: 1.5px solid #1a3a5c;
-      border-radius: 10px;
+      border: 1.5px solid #1a3a5c; border-radius: 10px;
       background: white; color: #1a3a5c;
       font-size: 13px; font-weight: 600; cursor: pointer;
     }
@@ -31,6 +45,7 @@
     .section { display: none; }
     .section.visible { display: block; }
 
+    /* ── URL card ── */
     .url-card {
       background: white; border-radius: 14px;
       padding: 24px;
@@ -44,6 +59,19 @@
     }
     input[type=text]:focus { border-color: #1a3a5c; }
     .hint { font-size: 12px; color: #aaa; margin-top: 8px; }
+
+    /* ── Remember me ── */
+    .remember-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 16px;
+    }
+    .remember-row input[type=checkbox] {
+      width: 18px; height: 18px; cursor: pointer;
+      accent-color: #1a3a5c;
+    }
+    .remember-row span { font-size: 14px; color: #555; cursor: pointer; }
+
+    /* ── Button ── */
     .go-btn {
       width: 100%; margin-top: 16px; padding: 14px;
       background: #1a3a5c; color: white; border: none;
@@ -52,23 +80,20 @@
     }
     .go-btn:active { opacity: 0.85; }
     .go-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
 
-    /* error states */
+    /* ── Messages ── */
     .msg { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 10px; font-size: 14px; }
     .msg.error   { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
     .msg.warning { background: #fffbea; color: #b7791f; border: 1px solid #f6e05e; }
     .msg.success { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
 
-    .spinner {
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
+    /* ── Site cards ── */
     .section-label {
       font-size: 13px; color: #aaa;
       text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
@@ -78,7 +103,7 @@
       padding: 18px 20px; margin-bottom: 12px;
       display: flex; align-items: center; gap: 16px;
       box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-      text-decoration: none;
+      text-decoration: none; cursor: pointer; border: none; width: 100%;
     }
     .site-card:active { background: #f5f8ff; }
     .icon {
@@ -91,69 +116,156 @@
     .info p  { font-size: 13px; color: #888; margin-top: 2px; }
     .arrow { margin-left: auto; color: #ccc; font-size: 22px; flex-shrink: 0; }
 
-    /* hidden iframe for checking */
-    #checker { display: none; width: 1px; height: 1px; border: none; }
+    /* ── Remember row inside sites section ── */
+    .sites-remember {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px; padding: 14px 16px;
+      background: white; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .sites-remember input[type=checkbox] {
+      width: 18px; height: 18px; cursor: pointer;
+      accent-color: #1a3a5c;
+    }
+    .sites-remember span { font-size: 14px; color: #555; }
   </style>
 </head>
 <body>
 
-  <div class="logo">
-    <h1>Seera Apps</h1>
-    <p>Select or enter your site</p>
+  <!-- ── CHECKING SCREEN ── -->
+  <div id="checkingScreen">
+    <div class="spinner-lg"></div>
+    <p>Checking your session...</p>
   </div>
 
-  <div class="toggle-row">
-    <button class="toggle-btn active" onclick="showSection('url', this)">Enter URL</button>
-    <button class="toggle-btn" onclick="showSection('sites', this)">Available Sites</button>
-  </div>
+  <!-- ── MAIN UI ── -->
+  <div id="mainUI" style="display:none;">
 
-  <!-- ENTER URL SECTION -->
-  <div class="section visible" id="section-url">
-    <div class="url-card">
-      <label for="siteUrl">Site URL</label>
-      <input type="text" id="siteUrl" placeholder="https://site-name.com" />
-      <p class="hint">Enter the URL</p>
+    <div class="logo">
+      <h1>Seera Apps</h1>
+      <p>Select or enter your hospital site</p>
+    </div>
 
-      <button class="go-btn" id="goBtn" onclick="goToSite()">
-        <span id="btnText">Open App →</span>
-        <div class="spinner" id="spinner"></div>
+    <div class="toggle-row">
+      <button class="toggle-btn active" onclick="showSection('url', this)">Enter URL</button>
+      <button class="toggle-btn" onclick="showSection('sites', this)">Available Sites</button>
+    </div>
+
+    <!-- ── ENTER URL SECTION ── -->
+    <div class="section visible" id="section-url">
+      <div class="url-card">
+        <label for="siteUrl">Hospital site URL</label>
+        <input type="text" id="siteUrl" placeholder="https://kfsh-dammam-asm.seeraarabia.com" />
+        <p class="hint">With or without /asm_app — we'll handle it</p>
+
+        <div class="remember-row">
+          <input type="checkbox" id="rememberUrl" checked />
+          <span onclick="document.getElementById('rememberUrl').click()">Remember this site & keep me logged in</span>
+        </div>
+
+        <button class="go-btn" id="goBtn" onclick="goToSite()">
+          <span id="btnText">Open App →</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+        <div class="msg" id="msgBox"></div>
+      </div>
+    </div>
+
+    <!-- ── AVAILABLE SITES SECTION ── -->
+    <div class="section" id="section-sites">
+
+      <div class="sites-remember">
+        <input type="checkbox" id="rememberSite" checked />
+        <span onclick="document.getElementById('rememberSite').click()">Remember this site & keep me logged in</span>
+      </div>
+
+      <p class="section-label">Available Sites</p>
+
+      <button class="site-card" onclick="openSite('https://kfsh-dammam-asm.seeraarabia.com', 'rememberSite')">
+        <div class="icon">🏥</div>
+        <div class="info"><h3>KFSH Dammam</h3><p>King Fahad Specialist Hospital</p></div>
+        <div class="arrow">›</div>
       </button>
 
-      <!-- Message box — shows error / checking / not found -->
-      <div class="msg" id="msgBox"></div>
+      <button class="site-card" onclick="openSite('http://35.252.41.128', 'rememberSite')">
+        <div class="icon">🏥</div>
+        <div class="info"><h3>Seera Unified</h3><p>Seera Unified</p></div>
+        <div class="arrow">›</div>
+      </button>
+
+      <button class="site-card" onclick="openSite('https://imanrdh-seeraasm.seeraarabia.com', 'rememberSite')">
+        <div class="icon">🏥</div>
+        <div class="info"><h3>Iman RDH</h3><p>Iman Rehab & Diagnostic Hospital</p></div>
+        <div class="arrow">›</div>
+      </button>
+
+      <!-- ADD NEW SITE: copy button block above, update onclick origin + h3 + p -->
+
     </div>
-  </div>
 
-  <!-- AVAILABLE SITES SECTION -->
-  <div class="section" id="section-sites">
-    <p class="section-label">Available Sites</p>
-
-    <a class="site-card" href="https://kfsh-dammam-asm.seeraarabia.com/asm_app/">
-      <div class="icon">🏥</div>
-      <div class="info"><h3>KFSH Dammam</h3><p>King Fahad Specialist Hospital</p></div>
-      <div class="arrow">›</div>
-    </a>
-
-    <a class="site-card" href="http://35.252.41.128/asm_app/">
-      <div class="icon">🏥</div>
-      <div class="info"><h3>Seera Unified</h3><p>Seera Unified</p></div>
-      <div class="arrow">›</div>
-    </a>
-
-    <a class="site-card" href="https://imanrdh-seeraasm.seeraarabia.com/asm_app/">
-      <div class="icon">🏥</div>
-      <div class="info"><h3>Iman RDH</h3><p>Iman Rehab & Diagnostic Hospital</p></div>
-      <div class="arrow">›</div>
-    </a>
-
-    <!-- ADD NEW SITE: copy block above, change href / h3 / p -->
-
-  </div>
-
-  <!-- Hidden iframe used to probe the URL -->
-  <iframe id="checker"></iframe>
+  </div><!-- end mainUI -->
 
   <script>
+    const STORAGE_KEY = 'seera_last_site';
+    const REMEMBER_KEY = 'seera_remember_me';
+    const DASHBOARD = '/asm_app/dashboard';
+
+    // ── On launch: if remember me was checked, probe last session ──────────
+    (function() {
+      const rememberMe = localStorage.getItem(REMEMBER_KEY) === 'true';
+      const lastSite   = localStorage.getItem(STORAGE_KEY);
+
+      if (!rememberMe || !lastSite) {
+        // First time OR user unchecked remember me — show selector
+        showMain();
+        return;
+      }
+
+      // Probe session on last site
+      fetch(lastSite + '/api/method/frappe.auth.get_logged_user', {
+        credentials: 'include',
+        signal: AbortSignal.timeout(6000)
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.message && data.message !== 'Guest') {
+          // Session alive → go straight to dashboard
+          window.location.href = lastSite + DASHBOARD;
+        } else {
+          // Session expired → show selector
+          showMain();
+        }
+      })
+      .catch(() => {
+        // Unreachable → show selector
+        showMain();
+      });
+    })();
+
+    function showMain() {
+      document.getElementById('checkingScreen').style.display = 'none';
+      document.getElementById('mainUI').style.display = 'block';
+    }
+
+    // ── Save/clear remember me preference ─────────────────────────────────
+    function savePreference(origin, rememberCheckboxId) {
+      const remember = document.getElementById(rememberCheckboxId).checked;
+      if (remember) {
+        localStorage.setItem(REMEMBER_KEY, 'true');
+        localStorage.setItem(STORAGE_KEY, origin);
+      } else {
+        localStorage.removeItem(REMEMBER_KEY);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    // ── Open site from cards ───────────────────────────────────────────────
+    function openSite(origin, rememberCheckboxId) {
+      savePreference(origin, rememberCheckboxId);
+      window.location.href = origin + '/asm_app/';
+    }
+
+    // ── Section toggle ─────────────────────────────────────────────────────
     function showSection(name, btn) {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
       document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
@@ -161,6 +273,7 @@
       btn.classList.add('active');
     }
 
+    // ── URL normalization ──────────────────────────────────────────────────
     function normalizeUrl(raw) {
       raw = raw.trim();
       if (!raw) return null;
@@ -178,21 +291,15 @@
       box.textContent = text;
       box.style.display = 'block';
     }
-
-    function hideMsg() {
-      const box = document.getElementById('msgBox');
-      box.style.display = 'none';
-    }
+    function hideMsg() { document.getElementById('msgBox').style.display = 'none'; }
 
     function setLoading(on) {
-      const btn     = document.getElementById('goBtn');
-      const spinner = document.getElementById('spinner');
-      const text    = document.getElementById('btnText');
-      btn.disabled        = on;
-      spinner.style.display = on ? 'block' : 'none';
-      text.textContent    = on ? 'Checking...' : 'Open App →';
+      document.getElementById('goBtn').disabled = on;
+      document.getElementById('spinner').style.display = on ? 'block' : 'none';
+      document.getElementById('btnText').textContent = on ? 'Checking...' : 'Open App →';
     }
 
+    // ── Go to site (URL input) ─────────────────────────────────────────────
     function goToSite() {
       const raw = document.getElementById('siteUrl').value;
       hideMsg();
@@ -211,22 +318,16 @@
       setLoading(true);
       showMsg('warning', '🔍 Checking site availability...');
 
-      // Use fetch with no-cors to probe — if it resolves, site exists
-      // Timeout after 6 seconds
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
-
-      fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+      fetch(url, { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(6000) })
         .then(() => {
-          clearTimeout(timeout);
-          // Site responded — navigate
+          const origin = new URL(url).origin;
+          savePreference(origin, 'rememberUrl');
           showMsg('success', '✅ Site found! Opening...');
           setTimeout(() => { window.location.href = url; }, 600);
         })
         .catch((err) => {
-          clearTimeout(timeout);
           setLoading(false);
-          if (err.name === 'AbortError') {
+          if (err.name === 'TimeoutError' || err.name === 'AbortError') {
             showMsg('error', '⏱️ Request timed out. No site found at this URL.');
           } else {
             showMsg('error', '❌ No site found at this URL. Please check and try again.');
@@ -234,131 +335,13 @@
         });
     }
 
-    document.getElementById('siteUrl').addEventListener('keydown', function(e) {
+    document.getElementById('siteUrl').addEventListener('keydown', e => {
       if (e.key === 'Enter') goToSite();
     });
-
-    // Clear message when user starts typing again
-    document.getElementById('siteUrl').addEventListener('input', function() {
-      hideMsg();
-      setLoading(false);
+    document.getElementById('siteUrl').addEventListener('input', () => {
+      hideMsg(); setLoading(false);
     });
   </script>
 
 </body>
 </html>
-
-
-
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <title>Seera Apps</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      min-height: 100vh;
-      padding: 40px 24px;
-    }
-    .logo { text-align: center; margin-bottom: 40px; }
-    .logo h1 { font-size: 22px; color: #1a3a5c; font-weight: 700; }
-    .logo p { color: #888; font-size: 14px; margin-top: 6px; }
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-    }
-    label { font-size: 13px; color: #888; display: block; margin-bottom: 8px; }
-    input[type=text] {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 15px;
-      outline: none;
-    }
-    input[type=text]:focus { border-color: #1a3a5c; }
-    .hint { font-size: 12px; color: #aaa; margin-top: 8px; }
-    .btn {
-      width: 100%;
-      margin-top: 16px;
-      padding: 14px;
-      background: #1a3a5c;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn:active { opacity: 0.85; }
-    .error { color: #e53e3e; font-size: 13px; margin-top: 10px; display: none; }
-  </style>
-</head>
-<body>
-
-<div class="logo">
-  <h1>Seera Apps</h1>
-  <p>Enter your Site URL to continue</p>
-</div>
-
-<div class="card">
-  <label for="siteUrl">Site URL</label>
-  <input type="text" id="siteUrl" placeholder="https://site-name.com" />
-  <p class="hint">Enter the URL</p>
-  <p class="error" id="errMsg">Please enter a valid URL</p>
-  <button class="btn" onclick="goToSite()">Open App →</button>
-</div>
-
-<script>
-  function normalizeUrl(raw) {
-    raw = raw.trim();
-    if (!raw) return null;
-
-    // Add https:// if no protocol given
-    if (!/^https?:\/\//i.test(raw)) {
-      raw = 'https://' + raw;
-    }
-
-    try {
-      const u = new URL(raw);
-
-      // Append /asm_app/ if not already in path
-      if (!u.pathname.includes('/asm_app')) {
-        u.pathname = '/asm_app/';
-      }
-
-      return u.toString();
-    } catch(e) {
-      return null;
-    }
-  }
-
-  function goToSite() {
-    const input = document.getElementById('siteUrl').value;
-    const err = document.getElementById('errMsg');
-    const url = normalizeUrl(input);
-
-    if (!url) {
-      err.style.display = 'block';
-      return;
-    }
-
-    err.style.display = 'none';
-    window.location.href = url;
-  }
-
-  // Allow pressing Enter
-  document.getElementById('siteUrl').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') goToSite();
-  });
-</script>
-
-</body>
-</html> -->
